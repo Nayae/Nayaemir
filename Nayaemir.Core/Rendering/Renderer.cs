@@ -1,22 +1,17 @@
 using System.Drawing;
-using Nayaemir.Core.Resources.Types;
+using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
 namespace Nayaemir.Core.Rendering;
 
 public abstract class Renderer
 {
+    protected readonly GL _api = Engine.Api;
+    
     public double DeltaTime { get; internal set; }
-
-    private readonly GL _api;
 
     private Color _currentColor;
     private ShaderObject _currentShader;
-
-    protected Renderer(GL api)
-    {
-        _api = api;
-    }
 
     public void Clear(Color color)
     {

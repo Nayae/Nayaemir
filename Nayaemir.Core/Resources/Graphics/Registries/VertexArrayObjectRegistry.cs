@@ -1,6 +1,6 @@
-using Nayaemir.Core.Resources.Types;
+using Nayaemir.Core.Resources.Graphics.Types;
 
-namespace Nayaemir.Core.Resources.Registries;
+namespace Nayaemir.Core.Resources.Graphics.Registries;
 
 internal class VertexArrayObjectRegistry : ResourceRegistry<VertexArrayObject>
 {

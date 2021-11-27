@@ -1,6 +1,6 @@
 using Silk.NET.OpenGL;
 
-namespace Nayaemir.Core.Resources.Types;
+namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class BufferObject : GraphicsResource
 {
@@ -26,7 +26,7 @@ public class BufferObject : GraphicsResource
 
     protected override void _Initialize()
     {
-        _id = Api.GenBuffer();
+        _id = _api.GenBuffer();
     }
 
     internal unsafe void SetData<T>(T[] data, nint offset = 0) where T : unmanaged
@@ -42,11 +42,11 @@ public class BufferObject : GraphicsResource
             }
 #endif
 
-            Api.BufferSubData(_target, offset * sizeof(T), new ReadOnlySpan<T>(data));
+            _api.BufferSubData(_target, offset * sizeof(T), new ReadOnlySpan<T>(data));
         }
         else
         {
-            Api.BufferData(_target, new ReadOnlySpan<T>(data), _usage);
+            _api.BufferData(_target, new ReadOnlySpan<T>(data), _usage);
 
             ElementSize = (uint)sizeof(T);
             ElementCount = (uint)data.Length;
@@ -60,6 +60,6 @@ public class BufferObject : GraphicsResource
 
     internal void Bind()
     {
-        Api.BindBuffer(_target, _id);
+        _api.BindBuffer(_target, _id);
     }
 }

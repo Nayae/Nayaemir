@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Nayaemir.Core;
 using Nayaemir.Core.Rendering;
-using Nayaemir.Core.Resources.Types;
+using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
 namespace Nayaemir;
@@ -32,14 +32,14 @@ internal class GameEngine : Engine
 
     protected override void Initialize()
     {
-        _vbo = ResourceFactory.CreateBufferObject(
+        _vbo = GraphicsResourceFactory.CreateBufferObject(
             BufferTargetARB.ArrayBuffer, _vertices, BufferUsageARB.StaticDraw
         );
-        _ebo = ResourceFactory.CreateBufferObject(
+        _ebo = GraphicsResourceFactory.CreateBufferObject(
             BufferTargetARB.ElementArrayBuffer, _indices, BufferUsageARB.StaticDraw
         );
 
-        _vao = ResourceFactory.CreateVertexArrayObject(
+        _vao = GraphicsResourceFactory.CreateVertexArrayObject(
             _vbo, _ebo, new Dictionary<uint, VertexAttributeType>
             {
                 { 0, VertexAttributeType.vec3 },
@@ -47,7 +47,7 @@ internal class GameEngine : Engine
             }
         );
 
-        _shader = ResourceFactory.CreateShader("Resources/shader.vert", "Resources/shader.frag");
+        _shader = GraphicsResourceFactory.CreateShader("Resources/shader.vert", "Resources/shader.frag");
     }
 
     protected override void Render(Renderer3D renderer)

@@ -4,17 +4,19 @@ using Silk.NET.SDL;
 
 namespace Nayaemir.Core;
 
-public class Debugger
+public class EngineDebugger
 {
-    public unsafe Debugger(GL api)
+    private readonly GL _api = Engine.Api;
+
+    public unsafe EngineDebugger()
     {
-        api.GetInteger(GetPName.ContextFlags, out var flags);
+        _api.GetInteger(GetPName.ContextFlags, out var flags);
         if (((GLcontextFlag)flags).HasFlag(GLcontextFlag.GLContextDebugFlag))
         {
-            api.Enable(EnableCap.DebugOutput);
-            api.Enable(EnableCap.DebugOutputSynchronous);
-            api.DebugMessageCallback(OnDebugMessage, null);
-            api.DebugMessageControl(GLEnum.DontCare, GLEnum.DontCare, GLEnum.DontCare, 0, null, true);
+            _api.Enable(EnableCap.DebugOutput);
+            _api.Enable(EnableCap.DebugOutputSynchronous);
+            _api.DebugMessageCallback(OnDebugMessage, null);
+            _api.DebugMessageControl(GLEnum.DontCare, GLEnum.DontCare, GLEnum.DontCare, 0, null, true);
         }
     }
 

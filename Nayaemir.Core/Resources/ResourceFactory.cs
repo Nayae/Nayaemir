@@ -1,53 +1,20 @@
-using Nayaemir.Core.Resources.Types;
-using Silk.NET.OpenGL;
-
 namespace Nayaemir.Core.Resources;
 
-public class ResourceFactory
+public abstract class ResourceFactory<TResourceEnum, TResource>
+    where TResourceEnum : Enum
+    where TResource : Resource
 {
-    private readonly ResourceManager _resourceManager;
+    private readonly Dictionary<TResourceEnum, IResourceRegistry> _registries;
 
-    internal ResourceFactory(ResourceManager resourceManager)
+    protected abstract Dictionary<TResourceEnum, IResourceRegistry> CreateRegistries();
+
+    protected ResourceFactory()
     {
-        _resourceManager = resourceManager;
+        _registries = new Dictionary<TResourceEnum, IResourceRegistry>();
     }
 
-    public BufferObject CreateBufferObject<T>(BufferTargetARB target, T[] data, BufferUsageARB usage)
-        where T : unmanaged
+    protected void Register(TResourceEnum type, TResource resource)
     {
-        var buffer = new BufferObject(target, usage);
-        _resourceManager.Register(ResourceType.BufferObject, buffer);
-
-        buffer.SetData(data);
-
-        return buffer;
-    }
-
-    public VertexArrayObject CreateVertexArrayObject(
-        BufferObject vbo, BufferObject ebo, Dictionary<uint, VertexAttributeType> attributes
-    )
-    {
-        var buffer = new VertexArrayObject(vbo, ebo, attributes);
-        _resourceManager.Register(ResourceType.VertexArrayObject, buffer);
-
-        return buffer;
-    }
-
-    public VertexArrayObject CreateVertexArrayObject(
-        BufferObject vbo, Dictionary<uint, VertexAttributeType> attributes
-    )
-    {
-        var buffer = new VertexArrayObject(vbo, attributes);
-        _resourceManager.Register(ResourceType.VertexArrayObject, buffer);
-
-        return buffer;
-    }
-
-    public ShaderObject CreateShader(string vertexPath, string fragmentPath)
-    {
-        var shader = new ShaderObject(vertexPath, fragmentPath);
-        _resourceManager.Register(ResourceType.Shader, shader);
-
-        return shader;
+        _registries[type].Register(resource);
     }
 }

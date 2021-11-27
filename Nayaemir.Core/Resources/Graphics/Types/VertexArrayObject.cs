@@ -1,6 +1,6 @@
 using Silk.NET.OpenGL;
 
-namespace Nayaemir.Core.Resources.Types;
+namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public enum VertexAttributeType
 {
@@ -40,7 +40,7 @@ public class VertexArrayObject : GraphicsResource
 
     protected override unsafe void _Initialize()
     {
-        _id = Api.GenVertexArray();
+        _id = _api.GenVertexArray();
         Bind();
 
         _vbo.Bind();
@@ -55,10 +55,10 @@ public class VertexArrayObject : GraphicsResource
 
         foreach (var (location, type) in _attributes)
         {
-            Api.VertexAttribPointer(
+            _api.VertexAttribPointer(
                 location, (int)type, VertexAttribPointerType.Float, false, stride, (void*)(offset * _vbo.ElementSize)
             );
-            Api.EnableVertexAttribArray(location);
+            _api.EnableVertexAttribArray(location);
 
             offset += (uint)type;
         }
@@ -70,16 +70,16 @@ public class VertexArrayObject : GraphicsResource
 
         if (_useIndices)
         {
-            Api.DrawElements(mode, _count, DrawElementsType.UnsignedInt, null);
+            _api.DrawElements(mode, _count, DrawElementsType.UnsignedInt, null);
         }
         else
         {
-            Api.DrawArrays(mode, 0, _count);
+            _api.DrawArrays(mode, 0, _count);
         }
     }
 
     private void Bind()
     {
-        Api.BindVertexArray(_id);
+        _api.BindVertexArray(_id);
     }
 }
