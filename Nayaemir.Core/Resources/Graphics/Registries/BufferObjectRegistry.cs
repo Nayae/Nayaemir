@@ -4,11 +4,11 @@ namespace Nayaemir.Core.Resources.Graphics.Registries;
 
 internal class BufferObjectRegistry : ResourceRegistry<BufferObject>
 {
-    protected override void _Register(BufferObject resource)
+    protected override void OnRegister(BufferObject resource)
     {
     }
 
-    protected override void _Release(BufferObject resource)
+    protected override void OnRelease(BufferObject resource)
     {
     }
 }

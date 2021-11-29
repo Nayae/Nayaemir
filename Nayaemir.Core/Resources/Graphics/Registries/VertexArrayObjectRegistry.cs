@@ -4,11 +4,11 @@ namespace Nayaemir.Core.Resources.Graphics.Registries;
 
 internal class VertexArrayObjectRegistry : ResourceRegistry<VertexArrayObject>
 {
-    protected override void _Register(VertexArrayObject resource)
+    protected override void OnRegister(VertexArrayObject resource)
     {
     }
 
-    protected override void _Release(VertexArrayObject resource)
+    protected override void OnRelease(VertexArrayObject resource)
     {
     }
 }

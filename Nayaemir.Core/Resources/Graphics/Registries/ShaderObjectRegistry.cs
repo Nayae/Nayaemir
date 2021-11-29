@@ -4,11 +4,11 @@ namespace Nayaemir.Core.Resources.Graphics.Registries;
 
 internal class ShaderObjectRegistry : ResourceRegistry<ShaderObject>
 {
-    protected override void _Register(ShaderObject resource)
+    protected override void OnRegister(ShaderObject resource)
     {
     }
 
-    protected override void _Release(ShaderObject resource)
+    protected override void OnRelease(ShaderObject resource)
     {
     }
 }

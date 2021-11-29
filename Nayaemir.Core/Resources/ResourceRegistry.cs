@@ -2,7 +2,7 @@ namespace Nayaemir.Core.Resources;
 
 internal abstract class ResourceRegistry<T> : IResourceRegistry where T : IResource
 {
-    protected abstract void _Register(T resource);
+    protected abstract void OnRegister(T resource);
 
     public void Register(IResource resource)
     {
@@ -13,10 +13,10 @@ internal abstract class ResourceRegistry<T> : IResourceRegistry where T : IResou
         }
 #endif
 
-        _Register((T)resource);
+        OnRegister((T)resource);
     }
 
-    protected abstract void _Release(T resource);
+    protected abstract void OnRelease(T resource);
 
     public void Release(IResource resource)
     {
@@ -27,6 +27,6 @@ internal abstract class ResourceRegistry<T> : IResourceRegistry where T : IResou
         }
 #endif
 
-        _Release((T)resource);
+        OnRelease((T)resource);
     }
 }
