@@ -6,11 +6,11 @@ public abstract class ContentResource : IResource
 
     protected ContentResource()
     {
-        ResourceRegistryContainer.Get(ResourceType).Register(this);
+        ResourceRegistry.Register(ResourceType, this);
     }
 
     public void Dispose()
     {
-        ResourceRegistryContainer.Get(ResourceType).Release(this);
+        ResourceRegistry.Release(ResourceType, this);
     }
 }

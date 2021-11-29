@@ -6,11 +6,11 @@ public abstract class ComponentResource : IResource
 
     protected ComponentResource()
     {
-        ResourceRegistryContainer.Get(ResourceType).Register(this);
+        ResourceRegistry.Register(ResourceType, this);
     }
 
     public void Dispose()
     {
-        ResourceRegistryContainer.Get(ResourceType).Release(this);
+        ResourceRegistry.Release(ResourceType, this);
     }
 }
