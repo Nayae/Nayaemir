@@ -1,5 +1,5 @@
 namespace Nayaemir.Core.Resources.Content;
 
-public enum ContentResourceEnum
+public enum ContentResourceType
 {
 }

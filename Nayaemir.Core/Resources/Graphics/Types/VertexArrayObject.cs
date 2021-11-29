@@ -12,7 +12,7 @@ public enum VertexAttributeType
 
 public class VertexArrayObject : GraphicsResource
 {
-    protected override GraphicsResourceEnum ResourceType => GraphicsResourceEnum.VertexArrayObject;
+    protected override GraphicsResourceType ResourceType => GraphicsResourceType.VertexArrayObject;
 
     private readonly BufferObject _vbo;
     private readonly BufferObject _ebo;

@@ -1,6 +1,6 @@
 namespace Nayaemir.Core.Resources.Component;
 
-public enum ComponentResourceEnum
+public enum ComponentResourceType
 {
     Mesh
 }

@@ -15,21 +15,21 @@ internal static class ResourceRegistry
         _registries = new Dictionary<Type, Dictionary<Enum, IResourceRegistry>>
         {
             {
-                typeof(GraphicsResourceEnum), new Dictionary<Enum, IResourceRegistry>
+                typeof(GraphicsResourceType), new Dictionary<Enum, IResourceRegistry>
                 {
-                    { GraphicsResourceEnum.BufferObject, new BufferObjectRegistry() },
-                    { GraphicsResourceEnum.VertexArrayObject, new VertexArrayObjectRegistry() },
-                    { GraphicsResourceEnum.ShaderObject, new ShaderObjectRegistry() }
+                    { GraphicsResourceType.BufferObject, new BufferObjectRegistry() },
+                    { GraphicsResourceType.VertexArrayObject, new VertexArrayObjectRegistry() },
+                    { GraphicsResourceType.ShaderObject, new ShaderObjectRegistry() }
                 }
             },
             {
-                typeof(ComponentResourceEnum), new Dictionary<Enum, IResourceRegistry>
+                typeof(ComponentResourceType), new Dictionary<Enum, IResourceRegistry>
                 {
-                    { ComponentResourceEnum.Mesh, new MeshRegistry() }
+                    { ComponentResourceType.Mesh, new MeshRegistry() }
                 }
             },
             {
-                typeof(ContentResourceEnum), new Dictionary<Enum, IResourceRegistry>()
+                typeof(ContentResourceType), new Dictionary<Enum, IResourceRegistry>()
             }
         };
     }

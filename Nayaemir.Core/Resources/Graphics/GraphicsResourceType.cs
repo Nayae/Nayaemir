@@ -1,6 +1,6 @@
 namespace Nayaemir.Core.Resources.Graphics;
 
-public enum GraphicsResourceEnum
+public enum GraphicsResourceType
 {
     BufferObject,
     VertexArrayObject,

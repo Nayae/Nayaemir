@@ -4,7 +4,7 @@ namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class BufferObject : GraphicsResource
 {
-    protected override GraphicsResourceEnum ResourceType => GraphicsResourceEnum.BufferObject;
+    protected override GraphicsResourceType ResourceType => GraphicsResourceType.BufferObject;
 
     internal uint ElementSize { get; private set; }
     internal uint ElementCount { get; private set; }
