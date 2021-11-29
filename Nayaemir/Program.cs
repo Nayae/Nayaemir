@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-using System.Drawing;
 using Nayaemir.Core;
-using Nayaemir.Core.Rendering;
 using Nayaemir.Core.Resources.Graphics.Types;
-using Silk.NET.OpenGL;
 
 namespace Nayaemir;
 
-internal class GameEngine : Engine
+public class GameEngine : Engine
 {
     private static readonly float[] _vertices =
     {
@@ -23,7 +19,7 @@ internal class GameEngine : Engine
         0, 1, 3, // first triangle
         1, 2, 3 // second triangle
     };
-
+ 
     private BufferObject _vbo;
     private BufferObject _ebo;
     private VertexArrayObject _vao;
@@ -32,30 +28,22 @@ internal class GameEngine : Engine
 
     protected override void Initialize()
     {
-        _vbo = GraphicsResourceFactory.CreateBufferObject(
-            BufferTargetARB.ArrayBuffer, _vertices, BufferUsageARB.StaticDraw
-        );
-        _ebo = GraphicsResourceFactory.CreateBufferObject(
-            BufferTargetARB.ElementArrayBuffer, _indices, BufferUsageARB.StaticDraw
-        );
-
-        _vao = GraphicsResourceFactory.CreateVertexArrayObject(
-            _vbo, _ebo, new Dictionary<uint, VertexAttributeType>
-            {
-                { 0, VertexAttributeType.vec3 },
-                { 1, VertexAttributeType.vec4 }
-            }
-        );
-
-        _shader = GraphicsResourceFactory.CreateShader("Resources/shader.vert", "Resources/shader.frag");
-    }
-
-    protected override void Render(Renderer3D renderer)
-    {
-        renderer.Clear(Color.CornflowerBlue);
-        renderer.UseShader(_shader);
-
-        _vao.Render(PrimitiveType.Triangles);
+        // _vbo = GraphicsResourceFactory.CreateBufferObject(
+        //     BufferTargetARB.ArrayBuffer, _vertices, BufferUsageARB.StaticDraw
+        // );
+        // _ebo = GraphicsResourceFactory.CreateBufferObject(
+        //     BufferTargetARB.ElementArrayBuffer, _indices, BufferUsageARB.StaticDraw
+        // );
+        //
+        // _vao = GraphicsResourceFactory.CreateVertexArrayObject(
+        //     _vbo, _ebo, new Dictionary<uint, VertexAttributeType>
+        //     {
+        //         { 0, VertexAttributeType.vec3 },
+        //         { 1, VertexAttributeType.vec4 }
+        //     }
+        // );
+        //
+        // _shader = GraphicsResourceFactory.CreateShader("Resources/shader.vert", "Resources/shader.frag");
     }
 }
 
