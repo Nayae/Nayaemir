@@ -1,8 +1,16 @@
-using Nayaemir.Core.Resources.Graphics;
-
 namespace Nayaemir.Core.Resources.Component;
 
-public abstract class ComponentResource : Resource
+public abstract class ComponentResource : IResource
 {
-    public GraphicsResourceFactory ResourceFactory => ResourceFactories.GraphicsResourceFactory;
+    protected abstract ComponentResourceEnum ResourceType { get; }
+
+    protected ComponentResource()
+    {
+        ResourceRegistryContainer.Get(ResourceType).Register(this);
+    }
+
+    public void Dispose()
+    {
+        ResourceRegistryContainer.Get(ResourceType).Release(this);
+    }
 }

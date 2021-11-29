@@ -4,19 +4,18 @@ namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class ShaderObject : GraphicsResource
 {
+    protected override GraphicsResourceEnum ResourceType => GraphicsResourceEnum.ShaderObject;
+
     private readonly string _vertexPath;
     private readonly string _fragmentPath;
 
-    private uint _id;
+    private readonly uint _id;
 
-    internal ShaderObject(string vertexPath, string fragmentPath)
+    public ShaderObject(string vertexPath, string fragmentPath)
     {
         _vertexPath = vertexPath;
         _fragmentPath = fragmentPath;
-    }
-
-    protected override void _Initialize()
-    {
+        
         var vertexShader = _api.CreateShader(ShaderType.VertexShader);
         _api.ShaderSource(vertexShader, File.ReadAllText(_vertexPath));
         _api.CompileShader(vertexShader);
@@ -34,7 +33,7 @@ public class ShaderObject : GraphicsResource
         _api.DeleteShader(fragmentShader);
     }
 
-    internal void Use()
+    public void Use()
     {
         _api.UseProgram(_id);
     }

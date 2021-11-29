@@ -1,10 +1,10 @@
 namespace Nayaemir.Core.Resources;
 
-internal abstract class ResourceRegistry<T> : IResourceRegistry where T : Resource
+internal abstract class ResourceRegistry<T> : IResourceRegistry where T : IResource
 {
     protected abstract void _Register(T resource);
 
-    public void Register(Resource resource)
+    public void Register(IResource resource)
     {
 #if DEBUG
         if (typeof(T) != resource.GetType())
@@ -13,13 +13,12 @@ internal abstract class ResourceRegistry<T> : IResourceRegistry where T : Resour
         }
 #endif
 
-        resource.Initialize(this);
         _Register((T)resource);
     }
 
     protected abstract void _Release(T resource);
 
-    public void Release(Resource resource)
+    public void Release(IResource resource)
     {
 #if DEBUG
         if (typeof(T) != resource.GetType())

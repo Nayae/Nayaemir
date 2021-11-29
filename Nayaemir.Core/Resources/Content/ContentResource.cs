@@ -1,8 +1,16 @@
-using Nayaemir.Core.Resources.Component;
-
 namespace Nayaemir.Core.Resources.Content;
 
-public abstract class ContentResource : Resource
+public abstract class ContentResource : IResource
 {
-    public ComponentResourceFactory ResourceFactory => ResourceFactories.ComponentResourceFactory;
+    protected abstract ContentResourceEnum ResourceType { get; }
+
+    protected ContentResource()
+    {
+        ResourceRegistryContainer.Get(ResourceType).Register(this);
+    }
+
+    public void Dispose()
+    {
+        ResourceRegistryContainer.Get(ResourceType).Release(this);
+    }
 }

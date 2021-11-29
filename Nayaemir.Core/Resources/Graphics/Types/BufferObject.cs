@@ -4,6 +4,8 @@ namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class BufferObject : GraphicsResource
 {
+    protected override GraphicsResourceEnum ResourceType => GraphicsResourceEnum.BufferObject;
+
     internal uint ElementSize { get; private set; }
     internal uint ElementCount { get; private set; }
 
@@ -11,25 +13,22 @@ public class BufferObject : GraphicsResource
 
     private readonly BufferUsageARB _usage;
 
-    private uint _id;
+    private readonly uint _id;
     private bool _isInitialized;
 
 #if DEBUG
     private Type _bufferType;
 #endif
 
-    internal BufferObject(BufferTargetARB target, BufferUsageARB usage)
+    public BufferObject(BufferTargetARB target, BufferUsageARB usage)
     {
         _target = target;
         _usage = usage;
-    }
 
-    protected override void _Initialize()
-    {
         _id = _api.GenBuffer();
     }
 
-    internal unsafe void SetData<T>(T[] data, nint offset = 0) where T : unmanaged
+    public unsafe void SetData<T>(T[] data, nint offset = 0) where T : unmanaged
     {
         Bind();
 

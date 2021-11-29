@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Nayaemir.Core;
 using Nayaemir.Core.Resources.Graphics.Types;
+using Silk.NET.OpenGL;
 
 namespace Nayaemir;
 
@@ -19,7 +21,7 @@ public class GameEngine : Engine
         0, 1, 3, // first triangle
         1, 2, 3 // second triangle
     };
- 
+
     private BufferObject _vbo;
     private BufferObject _ebo;
     private VertexArrayObject _vao;
@@ -28,22 +30,27 @@ public class GameEngine : Engine
 
     protected override void Initialize()
     {
-        // _vbo = GraphicsResourceFactory.CreateBufferObject(
-        //     BufferTargetARB.ArrayBuffer, _vertices, BufferUsageARB.StaticDraw
-        // );
-        // _ebo = GraphicsResourceFactory.CreateBufferObject(
-        //     BufferTargetARB.ElementArrayBuffer, _indices, BufferUsageARB.StaticDraw
-        // );
-        //
-        // _vao = GraphicsResourceFactory.CreateVertexArrayObject(
-        //     _vbo, _ebo, new Dictionary<uint, VertexAttributeType>
-        //     {
-        //         { 0, VertexAttributeType.vec3 },
-        //         { 1, VertexAttributeType.vec4 }
-        //     }
-        // );
-        //
-        // _shader = GraphicsResourceFactory.CreateShader("Resources/shader.vert", "Resources/shader.frag");
+        _vbo = new BufferObject(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
+        _vbo.SetData(_vertices);
+
+        _ebo = new BufferObject(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw);
+        _ebo.SetData(_indices);
+
+        _vao = new VertexArrayObject(_vbo, _ebo, new Dictionary<uint, VertexAttributeType>
+        {
+            { 0, VertexAttributeType.vec3 },
+            { 1, VertexAttributeType.vec4 }
+        });
+
+        _shader = new ShaderObject("Resources/shader.vert", "Resources/shader.frag");
+    }
+
+    protected override void Render()
+    {
+        Api.Clear(ClearBufferMask.ColorBufferBit);
+
+        _shader.Use();
+        _vao.Render(PrimitiveType.Triangles);
     }
 }
 
