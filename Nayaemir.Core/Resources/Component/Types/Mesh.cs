@@ -1,6 +1,5 @@
 namespace Nayaemir.Core.Resources.Component.Types;
 
-public class Mesh : ComponentResource
+public class Mesh : Resource
 {
-    protected sealed override ComponentResourceType ResourceType => ComponentResourceType.Mesh;
 }

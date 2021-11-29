@@ -4,8 +4,6 @@ namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class ShaderObject : GraphicsResource
 {
-    protected override GraphicsResourceType ResourceType => GraphicsResourceType.ShaderObject;
-
     private readonly string _vertexPath;
     private readonly string _fragmentPath;
 

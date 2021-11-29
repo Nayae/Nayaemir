@@ -12,8 +12,6 @@ public enum VertexAttributeType
 
 public class VertexArrayObject : GraphicsResource
 {
-    protected override GraphicsResourceType ResourceType => GraphicsResourceType.VertexArrayObject;
-
     private readonly BufferObject _vbo;
     private readonly BufferObject _ebo;
 
@@ -37,11 +35,7 @@ public class VertexArrayObject : GraphicsResource
         Bind();
 
         _vbo.Bind();
-
-        if (ebo != null)
-        {
-            _ebo.Bind();
-        }
+        _ebo?.Bind();
 
         var stride = (uint)(attributes.Values.Sum(v => (int)v) * _vbo.ElementSize);
         var offset = 0u;
