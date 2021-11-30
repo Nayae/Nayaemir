@@ -2,21 +2,15 @@ using Silk.NET.OpenGL;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public class BufferObject : GraphicsResource
+internal class BufferObject : GraphicsResource
 {
-    internal uint ElementSize { get; private set; }
-    internal uint ElementCount { get; private set; }
+    internal int ElementSize { get; private set; }
+    internal uint Size { get; private set; }
 
     private readonly BufferTargetARB _target;
-
     private readonly BufferUsageARB _usage;
 
     private readonly uint _id;
-    private bool _isInitialized;
-
-#if DEBUG
-    private Type _bufferType;
-#endif
 
     public BufferObject(BufferTargetARB target, BufferUsageARB usage)
     {
@@ -26,36 +20,22 @@ public class BufferObject : GraphicsResource
         _id = _api.GenBuffer();
     }
 
-    public unsafe void SetData<T>(T[] data, nint offset = 0) where T : unmanaged
+    public unsafe void Clear<T>(uint size) where T : unmanaged
     {
         Bind();
-
-        if (_isInitialized)
-        {
-#if DEBUG
-            if (typeof(T) != _bufferType)
-            {
-                throw new Exception();
-            }
-#endif
-
-            _api.BufferSubData(_target, offset * sizeof(T), new ReadOnlySpan<T>(data));
-        }
-        else
-        {
-            _api.BufferData(_target, new ReadOnlySpan<T>(data), _usage);
-
-            ElementSize = (uint)sizeof(T);
-            ElementCount = (uint)data.Length;
-            _isInitialized = true;
-
-#if DEBUG
-            _bufferType = typeof(T);
-#endif
-        }
+        _api.BufferData(_target, (nuint)(size * sizeof(T)), null, _usage);
+       
+        Size = size;
+        ElementSize = sizeof(T);
     }
 
-    internal void Bind()
+    public unsafe void SetData<T>(T[] data, uint offset = 0) where T : unmanaged
+    {
+        Bind();
+        _api.BufferSubData(_target, (nint)(offset * sizeof(T)), new ReadOnlySpan<T>(data));
+    }
+
+    public void Bind()
     {
         _api.BindBuffer(_target, _id);
     }

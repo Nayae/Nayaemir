@@ -2,66 +2,55 @@ using Silk.NET.OpenGL;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public enum VertexAttributeType
+internal class VertexArrayObject : GraphicsResource
 {
-    vec1 = 1,
-    vec2 = 2,
-    vec3 = 3,
-    vec4 = 4
-}
+    internal bool UseIndices { get; set; }
 
-public class VertexArrayObject : GraphicsResource
-{
-    private readonly BufferObject _vbo;
-    private readonly BufferObject _ebo;
+    private readonly BufferObject _vertexBuffer;
+    private readonly BufferObject _indexBuffer;
 
     private readonly uint _id;
-    private readonly uint _count;
+    private uint _attributeLocation;
 
-    public VertexArrayObject(BufferObject vbo, Dictionary<uint, VertexAttributeType> attributes)
-        : this(vbo, null, attributes)
+    public VertexArrayObject(BufferObject vertexBuffer, BufferObject indexBuffer)
     {
-    }
-
-    public unsafe VertexArrayObject(
-        BufferObject vbo, BufferObject ebo, Dictionary<uint, VertexAttributeType> attributes
-    )
-    {
-        _vbo = vbo;
-        _ebo = ebo;
-        _count = vbo.ElementCount;
+        _vertexBuffer = vertexBuffer;
+        _indexBuffer = indexBuffer;
 
         _id = _api.GenVertexArray();
         Bind();
 
-        _vbo.Bind();
-        _ebo?.Bind();
+        vertexBuffer.Bind();
+        indexBuffer.Bind();
+    }
 
-        var stride = (uint)(attributes.Values.Sum(v => (int)v) * _vbo.ElementSize);
-        var offset = 0u;
+    public unsafe void ConfigureAttribute(int size, uint offset)
+    {
+        Bind();
+        _api.VertexAttribPointer(
+            _attributeLocation,
+            size,
+            VertexAttribPointerType.Float,
+            false,
+            0,
+            (void*)(offset * _vertexBuffer.ElementSize)
+        );
+        _api.EnableVertexAttribArray(_attributeLocation);
 
-        foreach (var (location, type) in attributes)
-        {
-            _api.VertexAttribPointer(
-                location, (int)type, VertexAttribPointerType.Float, false, stride, (void*)(offset * _vbo.ElementSize)
-            );
-            _api.EnableVertexAttribArray(location);
-
-            offset += (uint)type;
-        }
+        _attributeLocation++;
     }
 
     public unsafe void Render(PrimitiveType mode)
     {
         Bind();
 
-        if (_ebo != null)
+        if (UseIndices)
         {
-            _api.DrawElements(mode, _count, DrawElementsType.UnsignedInt, null);
+            _api.DrawElements(mode, _indexBuffer.Size, DrawElementsType.UnsignedInt, null);
         }
         else
         {
-            _api.DrawArrays(mode, 0, _count);
+            _api.DrawArrays(mode, 0, _indexBuffer.Size);
         }
     }
 

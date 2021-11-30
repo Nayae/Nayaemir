@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+using System.Drawing;
+using System.Numerics;
 using Nayaemir.Core;
+using Nayaemir.Core.Resources.Component.Types;
 using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
@@ -7,13 +9,20 @@ namespace Nayaemir;
 
 public class GameEngine : Engine
 {
-    private static readonly float[] _vertices =
+    private static readonly Vector3[] _vertices =
     {
-        // positions      colors
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // bottom left
-        -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f // top left 
+        new(0.5f, 0.5f, 0.0f),
+        new(0.5f, -0.5f, 0.0f),
+        new(-0.5f, -0.5f, 0.0f),
+        new(-0.5f, 0.5f, 0.0f)
+    };
+
+    private static readonly Color[] _colors =
+    {
+        Color.White,
+        Color.White,
+        Color.White,
+        Color.White
     };
 
     private static readonly uint[] _indices =
@@ -22,27 +31,17 @@ public class GameEngine : Engine
         1, 2, 3 // second triangle
     };
 
-    private BufferObject _vbo;
-    private BufferObject _ebo;
-    private VertexArrayObject _vao;
-
-    private ShaderObject _shader;
+    private static ShaderObject _shader;
+    private static Mesh _mesh;
 
     protected override void Initialize()
     {
-        _vbo = new BufferObject(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
-        _vbo.SetData(_vertices);
-
-        _ebo = new BufferObject(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw);
-        _ebo.SetData(_indices);
-
-        _vao = new VertexArrayObject(_vbo, _ebo, new Dictionary<uint, VertexAttributeType>
-        {
-            { 0, VertexAttributeType.vec3 },
-            { 1, VertexAttributeType.vec4 }
-        });
-
         _shader = new ShaderObject("Resources/shader.vert", "Resources/shader.frag");
+
+        _mesh = new Mesh(VertexAttributes.Vertices | VertexAttributes.Colors, 4);
+        _mesh.SetVertices(_vertices);
+        _mesh.SetColors(_colors);
+        _mesh.SetIndices(_indices);
     }
 
     protected override void Render()
@@ -50,7 +49,7 @@ public class GameEngine : Engine
         Api.Clear(ClearBufferMask.ColorBufferBit);
 
         _shader.Use();
-        _vao.Render(PrimitiveType.Triangles);
+        _mesh.Render();
     }
 }
 
