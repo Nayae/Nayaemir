@@ -1,5 +1,7 @@
 using System.Drawing;
 using System.Numerics;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
@@ -8,8 +10,14 @@ namespace Nayaemir.Core.Resources.Components.Types;
 [Flags]
 public enum VertexAttributes
 {
+    [JsonPropertyOrder(0)]
     Vertices = 3,
-    Colors = 4
+
+    [JsonPropertyOrder(1)]
+    Colors = 4,
+
+    [JsonPropertyOrder(2)]
+    TexCoords = 2
 }
 
 public class Mesh : Resource
@@ -25,6 +33,8 @@ public class Mesh : Resource
     private readonly VertexAttributes _attributes;
     private readonly uint _vertexCount;
 
+    private readonly VertexAttributes[] _orderedVertexAttributes;
+
     public Mesh(VertexAttributes attributes, uint vertexCount)
     {
         _attributes = attributes;
@@ -35,6 +45,12 @@ public class Mesh : Resource
         _vertexBuffer = new BufferObject(BufferTargetARB.ArrayBuffer, BufferUsageARB.StaticDraw);
         _indexBuffer = new BufferObject(BufferTargetARB.ElementArrayBuffer, BufferUsageARB.StaticDraw);
         _vertexArray = new VertexArrayObject(_vertexBuffer, _indexBuffer);
+
+        _orderedVertexAttributes = typeof(VertexAttributes).GetFields()
+            .Where(f => f.GetCustomAttribute<JsonPropertyOrderAttribute>() != null)
+            .OrderBy(f => f.GetCustomAttribute<JsonPropertyOrderAttribute>()!.Order)
+            .Select(f => Enum.Parse<VertexAttributes>(f.Name))
+            .ToArray();
 
         Clear();
     }
@@ -63,6 +79,15 @@ public class Mesh : Resource
             color => color.G / 255.0f,
             color => color.B / 255.0f,
             color => color.A / 255.0f
+        });
+    }
+
+    public void SetTextureCoordinates(Vector2[] coordinates, uint offset = 0u)
+    {
+        UpdateData(coordinates, VertexAttributes.TexCoords, offset, new FieldSelectorDelegate<Vector2>[]
+        {
+            coordinate => coordinate.X,
+            coordinate => coordinate.Y
         });
     }
 
@@ -114,14 +139,17 @@ public class Mesh : Resource
         _vertexBuffer.Resize<float>(totalSize);
 
         var offset = 0u;
-        foreach (var attribute in Enum.GetValues<VertexAttributes>())
+        var attributeLocation = 0u;
+        foreach (var attribute in _orderedVertexAttributes)
         {
+            attributeLocation++;
+
             if (!_attributes.HasFlag(attribute))
             {
                 continue;
             }
 
-            _vertexArray.ConfigureAttribute((int)attribute, offset);
+            _vertexArray.ConfigureAttribute(attributeLocation - 1, (int)attribute, offset);
             _vertexOffsets[attribute] = offset;
 
             offset += (uint)attribute * _vertexCount;
