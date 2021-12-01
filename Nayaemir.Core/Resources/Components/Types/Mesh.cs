@@ -3,7 +3,7 @@ using System.Numerics;
 using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
-namespace Nayaemir.Core.Resources.Component.Types;
+namespace Nayaemir.Core.Resources.Components.Types;
 
 [Flags]
 public enum VertexAttributes
@@ -58,6 +58,7 @@ public class Mesh : Resource
     {
         UpdateData(colors, VertexAttributes.Colors, offset, new FieldSelectorDelegate<Color>[]
         {
+            // Normalize the values to range from 0.0f to 1.0f
             color => color.R / 255.0f,
             color => color.G / 255.0f,
             color => color.B / 255.0f,
@@ -67,7 +68,7 @@ public class Mesh : Resource
 
     public void SetIndices(uint[] indices)
     {
-        _indexBuffer.Clear<uint>((uint)indices.Length);
+        _indexBuffer.Resize<uint>((uint)indices.Length);
         _indexBuffer.SetData(indices);
 
         _vertexArray.UseIndices = true;
@@ -89,11 +90,11 @@ public class Mesh : Resource
 
         var values = new float[data.Length * propertySelectors.Length];
         var valueIndex = 0;
-        foreach (var color in data)
+        foreach (var entry in data)
         {
             for (var i = 0; i < propertySelectors.Length; i++)
             {
-                values[valueIndex + i] = propertySelectors[i](color);
+                values[valueIndex + i] = propertySelectors[i](entry);
             }
 
             valueIndex += propertySelectors.Length;
@@ -104,11 +105,13 @@ public class Mesh : Resource
 
     private void Clear()
     {
+        _vertexOffsets.Clear();
+
         var totalSize = Enum.GetValues<VertexAttributes>()
             .Where(a => _attributes.HasFlag(a))
             .Aggregate(0u, (current, attribute) => current + (uint)attribute * _vertexCount);
 
-        _vertexBuffer.Clear<float>(totalSize);
+        _vertexBuffer.Resize<float>(totalSize);
 
         var offset = 0u;
         foreach (var attribute in Enum.GetValues<VertexAttributes>())

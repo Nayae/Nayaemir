@@ -1,37 +1,38 @@
+using Nayaemir.Core.Resources.Engine.Types;
+using Nayaemir.Core.Resources.Graphics;
+using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
-using Silk.NET.Windowing;
 
 namespace Nayaemir.Core;
 
 public abstract class Engine : IDisposable
 {
-    public static GL Api { get; private set; }
-
-    private IWindow _window;
+    protected GL Api => GraphicsResource.Api;
 
     protected abstract void Initialize();
-    protected abstract void Render();
+    protected abstract void Render(float delta);
+
+    private readonly WindowObject _window;
+    private GraphicsDebuggerObject _debugger;
+
+    protected Engine()
+    {
+        _window = new WindowObject();
+
+        _window.Load += OnLoad;
+        _window.Render += Render;
+    }
 
     public void Run()
     {
-        _window = Window.Create(WindowOptions.Default);
-
-        _window.Load += OnLoad;
-        _window.Render += OnRender;
-
         _window.Run();
     }
 
-    public void OnLoad()
+    private void OnLoad()
     {
-        Api = GL.GetApi(_window);
-        
-        Initialize();
-    }
+        _debugger = new GraphicsDebuggerObject();
 
-    public void OnRender(double delta)
-    {
-        Render();
+        Initialize();
     }
 
     public void Dispose()

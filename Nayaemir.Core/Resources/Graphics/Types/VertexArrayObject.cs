@@ -17,7 +17,7 @@ internal class VertexArrayObject : GraphicsResource
         _vertexBuffer = vertexBuffer;
         _indexBuffer = indexBuffer;
 
-        _id = _api.GenVertexArray();
+        _id = Api.GenVertexArray();
         Bind();
 
         vertexBuffer.Bind();
@@ -27,7 +27,7 @@ internal class VertexArrayObject : GraphicsResource
     public unsafe void ConfigureAttribute(int size, uint offset)
     {
         Bind();
-        _api.VertexAttribPointer(
+        Api.VertexAttribPointer(
             _attributeLocation,
             size,
             VertexAttribPointerType.Float,
@@ -35,7 +35,7 @@ internal class VertexArrayObject : GraphicsResource
             0,
             (void*)(offset * _vertexBuffer.ElementSize)
         );
-        _api.EnableVertexAttribArray(_attributeLocation);
+        Api.EnableVertexAttribArray(_attributeLocation);
 
         _attributeLocation++;
     }
@@ -46,16 +46,16 @@ internal class VertexArrayObject : GraphicsResource
 
         if (UseIndices)
         {
-            _api.DrawElements(mode, _indexBuffer.Size, DrawElementsType.UnsignedInt, null);
+            Api.DrawElements(mode, _indexBuffer.Size, DrawElementsType.UnsignedInt, null);
         }
         else
         {
-            _api.DrawArrays(mode, 0, _indexBuffer.Size);
+            Api.DrawArrays(mode, 0, _indexBuffer.Size);
         }
     }
 
     private void Bind()
     {
-        _api.BindVertexArray(_id);
+        Api.BindVertexArray(_id);
     }
 }

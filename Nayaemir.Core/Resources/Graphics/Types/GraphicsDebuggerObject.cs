@@ -2,21 +2,19 @@ using Silk.NET.Core.Native;
 using Silk.NET.OpenGL;
 using Silk.NET.SDL;
 
-namespace Nayaemir.Core;
+namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public class EngineDebugger
+public class GraphicsDebuggerObject : GraphicsResource
 {
-    private readonly GL _api = Engine.Api;
-
-    public unsafe EngineDebugger()
+    public unsafe GraphicsDebuggerObject()
     {
-        _api.GetInteger(GetPName.ContextFlags, out var flags);
+        Api.GetInteger(GetPName.ContextFlags, out var flags);
         if (((GLcontextFlag)flags).HasFlag(GLcontextFlag.GLContextDebugFlag))
         {
-            _api.Enable(EnableCap.DebugOutput);
-            _api.Enable(EnableCap.DebugOutputSynchronous);
-            _api.DebugMessageCallback(OnDebugMessage, null);
-            _api.DebugMessageControl(GLEnum.DontCare, GLEnum.DontCare, GLEnum.DontCare, 0, null, true);
+            Api.Enable(EnableCap.DebugOutput);
+            Api.Enable(EnableCap.DebugOutputSynchronous);
+            Api.DebugMessageCallback(OnDebugMessage, null);
+            Api.DebugMessageControl(GLEnum.DontCare, GLEnum.DontCare, GLEnum.DontCare, 0, null, true);
         }
     }
 
