@@ -7,11 +7,10 @@ namespace Nayaemir.Core.Resources.Graphics.Types;
 
 public class ShaderObject : GraphicsResource
 {
-    private static uint _currentShader;
-
     private readonly string _vertexPath;
     private readonly string _fragmentPath;
 
+    private static uint _currentId;
     private readonly uint _id;
 
     private Camera _attachedCamera;
@@ -40,10 +39,10 @@ public class ShaderObject : GraphicsResource
 
     public void Bind()
     {
-        if (_id != _currentShader)
+        if (_currentId != _id)
         {
             Api.UseProgram(_id);
-            _currentShader = _id;
+            _currentId = _id;
         }
     }
 

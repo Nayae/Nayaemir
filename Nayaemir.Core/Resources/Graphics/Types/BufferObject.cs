@@ -10,6 +10,7 @@ internal class BufferObject : GraphicsResource
     private readonly BufferTargetARB _target;
     private readonly BufferUsageARB _usage;
 
+    private static uint _currentId;
     private readonly uint _id;
 
     public BufferObject(BufferTargetARB target, BufferUsageARB usage)
@@ -24,7 +25,7 @@ internal class BufferObject : GraphicsResource
     {
         Bind();
         Api.BufferData(_target, (nuint)(size * sizeof(T)), null, _usage);
-       
+
         Size = size;
         ElementSize = sizeof(T);
     }
@@ -37,6 +38,10 @@ internal class BufferObject : GraphicsResource
 
     public void Bind()
     {
-        Api.BindBuffer(_target, _id);
+        if (_currentId != _id)
+        {
+            Api.BindBuffer(_target, _id);
+            _currentId = _id;
+        }
     }
 }

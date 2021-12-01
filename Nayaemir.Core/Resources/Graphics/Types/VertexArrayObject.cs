@@ -9,7 +9,9 @@ internal class VertexArrayObject : GraphicsResource
     private readonly BufferObject _vertexBuffer;
     private readonly BufferObject _indexBuffer;
 
+    private static uint _currentId;
     private readonly uint _id;
+
     private uint _attributeLocation;
 
     public VertexArrayObject(BufferObject vertexBuffer, BufferObject indexBuffer)
@@ -56,6 +58,10 @@ internal class VertexArrayObject : GraphicsResource
 
     private void Bind()
     {
-        Api.BindVertexArray(_id);
+        if (_currentId != _id)
+        {
+            Api.BindVertexArray(_id);
+            _currentId = _id;
+        }
     }
 }
