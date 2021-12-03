@@ -8,13 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FreeTypeSharp" Version="2.0.0.8-ci" />
       <PackageReference Include="Silk.NET" Version="2.10.1" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Resources\Content\Registries" />
-      <Folder Include="Resources\Content\Types" />
       <Folder Include="Resources\Engine\Registries" />
       <Folder Include="Resources\Graphics\Registries" />
     </ItemGroup>

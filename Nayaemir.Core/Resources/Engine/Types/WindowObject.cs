@@ -1,5 +1,4 @@
 using Nayaemir.Core.Resources.Components.Registries;
-using Nayaemir.Core.Resources.Graphics;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -31,7 +30,7 @@ internal class WindowObject : Resource
 
     private void OnLoad()
     {
-        GraphicsResource.Api = GL.GetApi(_window);
+        ApiResource.Api = GL.GetApi(_window);
 
         // Initialize the viewport size before any camera is created
         ResourceRegistry.Get<CameraRegistry>().SetInitialFramebufferSize(_window.Size);
@@ -47,7 +46,7 @@ internal class WindowObject : Resource
 
     private void OnFramebufferResize(Vector2D<int> size)
     {
-        GraphicsResource.Api.Viewport(size);
+        ApiResource.Api.Viewport(size);
 
         ResourceRegistry.Get<CameraRegistry>().OnFramebufferResize(size);
     }

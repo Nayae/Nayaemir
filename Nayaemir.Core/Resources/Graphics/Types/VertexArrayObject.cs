@@ -1,11 +1,10 @@
+using Nayaemir.Core.AttributeLayouts;
 using Silk.NET.OpenGL;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-internal class VertexArrayObject : GraphicsResource
+internal class VertexArrayObject<TAttributeLayout> : ApiResource where TAttributeLayout : IAttributeLayout, new()
 {
-    internal bool UseIndices { get; set; }
-
     private readonly BufferObject _vertexBuffer;
     private readonly BufferObject _indexBuffer;
 
@@ -20,44 +19,49 @@ internal class VertexArrayObject : GraphicsResource
         _id = Api.GenVertexArray();
         Bind();
 
-        vertexBuffer.Bind();
-        indexBuffer.Bind();
+        vertexBuffer?.Bind();
+        indexBuffer?.Bind();
+
+        ConfigureAttributes();
     }
 
-    public unsafe void ConfigureAttribute(uint location, int size, uint offset)
-    {
-        Bind();
-        Api.VertexAttribPointer(
-            location,
-            size,
-            VertexAttribPointerType.Float,
-            false,
-            0,
-            (void*)(offset * _vertexBuffer.ElementSize)
-        );
-        Api.EnableVertexAttribArray(location);
-    }
-
-    public unsafe void Render(PrimitiveType mode)
-    {
-        Bind();
-
-        if (UseIndices)
-        {
-            Api.DrawElements(mode, _indexBuffer.Size, DrawElementsType.UnsignedInt, null);
-        }
-        else
-        {
-            Api.DrawArrays(mode, 0, _indexBuffer.Size);
-        }
-    }
-
-    private void Bind()
+    public void Bind()
     {
         if (_currentId != _id)
         {
             Api.BindVertexArray(_id);
             _currentId = _id;
+        }
+    }
+
+    private unsafe void ConfigureAttributes()
+    {
+        Bind();
+
+        var layout = new TAttributeLayout();
+        var attributeLocation = 0u;
+        var offset = 0u;
+        foreach (var attribute in IAttributeLayout.AttributeSizes.Keys)
+        {
+            attributeLocation++;
+
+            if (!layout.Attributes.HasFlag(attribute))
+            {
+                continue;
+            }
+
+            Api.VertexAttribPointer(
+                attributeLocation - 1,
+                (int)IAttributeLayout.AttributeSizes[attribute],
+                VertexAttribPointerType.Float,
+                false,
+                (uint)(layout.ValueCount * _vertexBuffer.ElementSize),
+                (void*)(offset * _vertexBuffer.ElementSize)
+            );
+
+            offset += IAttributeLayout.AttributeSizes[attribute];
+
+            Api.EnableVertexAttribArray(attributeLocation - 1);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System.Drawing;
 using System.Numerics;
 using Nayaemir.Core;
-using Nayaemir.Core.Resources.Components.Types;
-using Nayaemir.Core.Resources.Graphics.Types;
 using Silk.NET.OpenGL;
 
 namespace Nayaemir;
@@ -39,44 +37,19 @@ public class GameEngine : Engine
         1, 2, 3 // second triangle
     };
 
-    private Camera _camera;
-    private Mesh _mesh;
-
-    private ShaderObject _shader;
-    private TextureObject _texture;
-
     protected override void Initialize()
     {
-        _mesh = new Mesh(VertexAttributes.Vertices | VertexAttributes.Colors | VertexAttributes.TexCoords, 4);
-        _mesh.SetVertices(_vertices);
-        _mesh.SetColors(_colors);
-        _mesh.SetTextureCoordinates(_texCoords);
-        _mesh.SetIndices(_indices);
-
-        _camera = new Camera();
-        _camera.SetOrthographicMode(0.01f, 100.0f);
-        _camera.SetView(0, 0, -3.0f);
-
-        _texture = new TextureObject("Resources/container.jpg");
-
-        _shader = new ShaderObject("Resources/shader.vert", "Resources/shader.frag");
-        _shader.AttachCamera(_camera);
     }
 
     protected override void Render(float delta)
     {
-        Api.Clear(ClearBufferMask.ColorBufferBit);
-
-        _texture.Bind();
-        _shader.Bind();
-
-        _mesh.Render();
+        Api.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
     }
 }
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static unsafe void Main(string[] args)
     {
         using (var engine = new GameEngine())
         {

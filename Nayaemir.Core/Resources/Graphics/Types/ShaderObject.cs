@@ -5,7 +5,7 @@ using Silk.NET.OpenGL;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public class ShaderObject : GraphicsResource
+public class ShaderObject : ApiResource
 {
     private readonly string _vertexPath;
     private readonly string _fragmentPath;

@@ -1,24 +1,40 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Silk.NET.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public class TextureObject : GraphicsResource
+public class TextureObject : ApiResource
 {
-    private readonly Image<Rgba32> _image;
+    internal uint Width { get; }
+    internal uint Height { get; }
 
     private static uint _currentId;
     private readonly uint _id;
 
     public TextureObject(string imagePath)
     {
-        _image = Image.Load<Rgba32>(imagePath);
+        var image = Image.Load<Rgba32>(imagePath);
+
+        Width = (uint)image.Width;
+        Height = (uint)image.Height;
 
         _id = Api.GenTexture();
-        BufferImageData();
+
+        if (image.TryGetSinglePixelSpan(out var pixels))
+        {
+            BufferImageData(pixels);
+        }
+    }
+
+    public TextureObject(Span<Rgba32> pixels, uint width, uint height)
+    {
+        _id = Api.GenTexture();
+
+        Width = width;
+        Height = height;
+
+        BufferImageData(pixels);
     }
 
     public void Bind()
@@ -30,27 +46,26 @@ public class TextureObject : GraphicsResource
         }
     }
 
-    private void BufferImageData()
+    private void BufferImageData(Span<Rgba32> pixels)
     {
         Bind();
 
-        if (_image.TryGetSinglePixelSpan(out var pixels))
-        {
-            Api.TexImage2D(
-                TextureTarget.Texture2D,
-                0,
-                InternalFormat.Rgba,
-                (uint)_image.Width,
-                (uint)_image.Height,
-                0,
-                PixelFormat.Rgba,
-                PixelType.UnsignedByte,
-                pixels.GetPinnableReference()
-            );
-        }
+        Api.TexImage2D(
+            TextureTarget.Texture2D,
+            0,
+            InternalFormat.Rgba,
+            Width,
+            Height,
+            0,
+            PixelFormat.Rgba,
+            PixelType.UnsignedByte,
+            pixels.GetPinnableReference()
+        );
 
-        Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-        Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+        Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
+            (int)TextureWrapMode.ClampToBorder);
+        Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT,
+            (int)TextureWrapMode.ClampToBorder);
         Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         Api.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 

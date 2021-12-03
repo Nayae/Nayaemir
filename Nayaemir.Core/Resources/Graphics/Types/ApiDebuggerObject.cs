@@ -4,9 +4,9 @@ using Silk.NET.SDL;
 
 namespace Nayaemir.Core.Resources.Graphics.Types;
 
-public class GraphicsDebuggerObject : GraphicsResource
+public class ApiDebuggerObject : ApiResource
 {
-    public unsafe GraphicsDebuggerObject()
+    public unsafe ApiDebuggerObject()
     {
         Api.GetInteger(GetPName.ContextFlags, out var flags);
         if (((GLcontextFlag)flags).HasFlag(GLcontextFlag.GLContextDebugFlag))
